@@ -1759,3 +1759,29 @@
     width: 100%;
     justify-content: center;
 }
+
+.projects-gallery {
+  display: flex;
+  gap: 30px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 15px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--neon-pink) transparent;
+}
+
+.projects-gallery::-webkit-scrollbar {
+  height: 8px;
+}
+.projects-gallery::-webkit-scrollbar-thumb {
+  background: var(--neon-pink);
+  border-radius: 10px;
+}
+
+.project-card {
+  flex: 0 0 400px;
+  height: 400px;
+  scroll-snap-align: start;
+}
+
+

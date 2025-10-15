@@ -722,8 +722,8 @@
         ],
         category: 'csharp',
         image: 'images/smartnotes.png',
-        github: 'https://github.com/24102070/Cebu_Plant_Depot',
-        demo: 'https://cebuplantdepot.dcism.org/'
+        github: 'https://github.com/DrexReeeeee/SmartNotes',
+        demo: 'https://github.com/DrexReeeeee/SmartNotes'
     },
     {
         title: 'EaseSkolar',

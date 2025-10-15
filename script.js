@@ -740,6 +740,20 @@
         image: 'fas fa-graduation-cap',
         github: 'https://github.com/DrexReeeeee/Easkolar',
         demo: 'https://github.com/DrexReeeeee/Easkolar'
+    },
+      {
+        title: 'ToDo App',
+        description: 'A simple and intuitive to-do list app that helps users efficiently track and manage their daily tasks. Stay organized, set priorities, and boost productivity with ease.',
+        tech: ['HTML', 'CSS', 'Javascript', 'JQuery'],
+        features: [
+            'Add, edit, and delete tasks',
+            'Mark tasks as active or completed',
+            'User authentication for secure access'
+        ],
+        category: 'web',
+        image: 'images/todoapp.png',
+        github: 'https://github.com/DrexReeeeee/To-Do_App',
+        demo: 'https://to-do-app-green-beta.vercel.app/'
     }
 ];
 

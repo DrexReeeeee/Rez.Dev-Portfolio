@@ -726,8 +726,8 @@
         demo: 'https://github.com/DrexReeeeee/SmartNotes'
     },
     {
-        title: 'EaseSkolar',
-        description: 'A developing platform that helps students find scholarships in the Philippines and match them with AI based on eligibility and description.',
+        title: 'Easekolar',
+        description: 'A Scholarship Matching platform that helps students find scholarships in the Philippines and match them with AI based on eligibility and description.',
         tech: ['Node.js', 'React.js'],
         features: [
             'Scholarship listing and search filters',
@@ -737,9 +737,9 @@
             'User authentication and personalization'
         ],
         category: 'ai',
-        image: 'fas fa-graduation-cap',
+        image: 'images/easekolar.png',
         github: 'https://github.com/DrexReeeeee/Easkolar',
-        demo: 'https://github.com/DrexReeeeee/Easkolar'
+        demo: 'https://easekolar.dcism.org'
     },
       {
         title: 'ToDo App',
@@ -754,7 +754,25 @@
         image: 'images/todoapp.png',
         github: 'https://github.com/DrexReeeeee/To-Do_App',
         demo: 'https://to-do-app-green-beta.vercel.app/'
-    }
+    },
+
+    {
+    title: 'PANIC-TYPE',
+    description: 'A psychological horror typing game built with Blazor WebAssembly, where players must type commands to maintain firewall integrity against an awakening AI entity called COGNITO-7.',
+    tech: ['.NET', 'C#', 'JavaScript'],
+    features: [
+        'Emotion-driven interactive gameplay mechanics',
+        'Dynamic UI behavior based on user input',
+        'Real-time feedback and state changes',
+        'Clean backend logic using .NET',
+        'Optimized for performance and responsiveness'
+    ],
+    category: 'web',
+    image: 'images/Panic-Type.png',
+    github: 'https://github.com/DrexReeeeee/Panic-Type',
+    demo: 'https://github.com/DrexReeeeee/Panic-Type'
+}
+
 ];
 
             

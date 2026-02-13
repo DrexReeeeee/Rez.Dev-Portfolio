@@ -1,649 +1,190 @@
+// Initialize Lenis Smooth Scroll
+const lenis = new Lenis({
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    smooth: true,
+    smoothTouch: false,
+    touchMultiplier: 2,
+});
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize all interactive components
-            initThreeJS();
-            initEnhancedMouseTrail();
-            initInteractiveComponents();
-            initTerminal();
-            initSkillBars();
-            initTechOrbit();
-            initJourneyTimeline();
-            initProjectsGallery();
-            initCyberPad();
-            initThemeToggle();
-            initAnimations();
-        });
+function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
 
-        // Initialize Three.js scene for 3D background
-        function initThreeJS() {
-            const canvas = document.getElementById('bg-canvas');
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
-            
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            
-            const cityGroup = new THREE.Group();
-            
-            for (let i = 0; i < 50; i++) {
-                const buildingHeight = Math.random() * 20 + 5;
-                const buildingWidth = Math.random() * 4 + 1;
-                const buildingDepth = Math.random() * 4 + 1;
-                
-                const buildingGeometry = new THREE.BoxGeometry(buildingWidth, buildingHeight, buildingDepth);
-                const buildingMaterial = new THREE.MeshBasicMaterial({ 
-                    color: 0x1a0a2e,
-                    wireframe: true
-                });
-                
-                const building = new THREE.Mesh(buildingGeometry, buildingMaterial);
-                
-                const x = (i % 10 - 5) * 10;
-                const z = Math.floor(i / 10 - 2.5) * 10;
-                
-                building.position.set(x, buildingHeight / 2, z);
-        
-                for (let j = 0; j < 5; j++) {
-                    const windowGeometry = new THREE.PlaneGeometry(0.5, 0.5);
-                    const windowMaterial = new THREE.MeshBasicMaterial({ 
-                        color: Math.random() > 0.5 ? 0xff00ff : 0x8a2be2,
-                        side: THREE.DoubleSide
-                    });
-                    
-                    const window = new THREE.Mesh(windowGeometry, windowMaterial);
-                    window.position.set(
-                        0,
-                        -buildingHeight / 2 + (j + 1) * (buildingHeight / 6),
-                        buildingDepth / 2 + 0.01
-                    );
-                    
-                    building.add(window);
-                }
-                
-                cityGroup.add(building);
-            }
-            
-            scene.add(cityGroup);
-            
+// Loading Screen
+window.addEventListener('load', () => {
+    const loadingScreen = document.querySelector('.loading-screen');
+    setTimeout(() => {
+        loadingScreen.classList.add('hidden');
+    }, 2000);
+});
+
+// =========================================
+// 2. CUSTOM CURSOR
+// =========================================
+
+const cursor = document.querySelector('.cursor');
+const trail = document.querySelector('.cursor-trail');
+
+document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
     
-            const particlesGeometry = new THREE.BufferGeometry();
-            const particlesCount = 2000;
-            const posArray = new Float32Array(particlesCount * 3);
-            
-            for(let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 100;
-            }
-            
-            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
-            
-            const particlesMaterial = new THREE.PointsMaterial({
-                size: 0.05,
-                color: 0xff00ff
-            });
-            
-            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
-            scene.add(particlesMesh);
-            
-            const gridHelper = new THREE.GridHelper(100, 100, 0xff00ff, 0xff00ff);
-            gridHelper.material.opacity = 0.1;
-            gridHelper.material.transparent = true;
-            scene.add(gridHelper);
-            
-            camera.position.z = 30;
-            camera.position.y = 15;
+    setTimeout(() => {
+        trail.style.left = e.clientX + 'px';
+        trail.style.top = e.clientY + 'px';
+    }, 50);
+});
 
-            function animate() {
-                requestAnimationFrame(animate);
-                
-                cityGroup.rotation.y += 0.001;
-                particlesMesh.rotation.y += 0.002;
-                
-                renderer.render(scene, camera);
+// Hover effect on interactive elements
+const interactiveElements = document.querySelectorAll('a, button, .exp-card, .skill-item, .pad-cell, .btn-primary, .nav-link');
+interactiveElements.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        trail.style.transform = 'translate(-50%, -50%) scale(1.5)';
+        trail.style.borderColor = 'var(--accent)';
+    });
+    
+    el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        trail.style.transform = 'translate(-50%, -50%) scale(1)';
+        trail.style.borderColor = 'rgba(155, 77, 202, 0.3)';
+    });
+});
+
+// =========================================
+// 3. TYPING ANIMATION
+// =========================================
+
+const typingElement = document.getElementById('typingText');
+if (typingElement) {
+    const words = ["Immersive Web", "3D Experiences", ".NET Solutions", "Interactive UI", "C# Developer", "Full-Stack Apps"];
+    let i = 0, j = 0, isDeleting = false;
+    
+    function type() {
+        const currentWord = words[i];
+        if (isDeleting) {
+            typingElement.textContent = currentWord.substring(0, j-1);
+            j--;
+            if (j == 0) { 
+                isDeleting = false; 
+                i = (i + 1) % words.length; 
             }
-            
-            animate();
- 
-            window.addEventListener('resize', () => {
-                camera.aspect = window.innerWidth / window.innerHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-            });
+        } else {
+            typingElement.textContent = currentWord.substring(0, j+1);
+            j++;
+            if (j == currentWord.length) { 
+                isDeleting = true; 
+                setTimeout(type, 2000); 
+                return; 
+            }
         }
+        setTimeout(type, isDeleting ? 100 : 200);
+    }
+    type();
+}
 
-        function initEnhancedMouseTrail() {
-            const trail = document.getElementById('mouse-trail');
-            let mouseX = 0, mouseY = 0;
-            let trailX = 0, trailY = 0;
-            const trailParticles = [];
-            const maxTrailLength = 20;
-            
-            document.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-                trail.style.opacity = '1';
-                
-                for (let i = 0; i < 4; i++) {
-                    createTrailParticle(mouseX, mouseY);
-                }
-            });
-            
-            function createTrailParticle(x, y) {
-                const particle = document.createElement('div');
-                particle.className = 'trail-particle';
-                particle.style.left = x + 'px';
-                particle.style.top = y + 'px';
-                
-                const size = Math.random() * 10 + 5;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                const colors = ['#ff00ff', '#8a2be2', '#da70d6'];
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.background = color;
-                
-                particle.style.filter = `blur(${Math.random() * 3 + 1}px)`;
-                
-                document.body.appendChild(particle);
-                trailParticles.push(particle);
-                
-                gsap.to(particle, {
-                    x: (Math.random() - 0.5) * 40,
-                    y: (Math.random() - 0.5) * 40,
-                    opacity: 0,
-                    scale: 0,
-                    duration: Math.random() * 1.5 + 0.5,
-                    ease: 'power2.out',
-                    onComplete: () => {
-                        if (document.body.contains(particle)) {
-                            document.body.removeChild(particle);
-                        }
-                        const index = trailParticles.indexOf(particle);
-                        if (index > -1) {
-                            trailParticles.splice(index, 1);
-                        }
-                    }
-                });
-                
-                if (trailParticles.length > maxTrailLength) {
-                    const oldParticle = trailParticles.shift();
-                    if (oldParticle && document.body.contains(oldParticle)) {
-                        document.body.removeChild(oldParticle);
-                    }
-                }
+// =========================================
+// 4. SCROLL ANIMATIONS (GSAP)
+// =========================================
+
+// Navbar scroll effect
+window.addEventListener('scroll', () => {
+    const navbar = document.querySelector('.navbar');
+    if (window.scrollY > 50) {
+        navbar.classList.add('scrolled');
+    } else {
+        navbar.classList.remove('scrolled');
+    }
+});
+
+// GSAP Scroll Animations
+gsap.registerPlugin(ScrollTrigger);
+
+// Reveal elements on scroll
+const revealElements = document.querySelectorAll('.reveal');
+revealElements.forEach(element => {
+    gsap.fromTo(element, 
+        {
+            opacity: 0,
+            y: 50
+        },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            scrollTrigger: {
+                trigger: element,
+                start: 'top 80%',
+                end: 'top 50%',
+                toggleActions: 'play none none reverse'
             }
-            
-            function updateTrail() {
-                trailX += (mouseX - trailX) * 0.1;
-                trailY += (mouseY - trailY) * 0.1;
-                
-                trail.style.left = trailX - 15 + 'px';
-                trail.style.top = trailY - 15 + 'px';
-                
-                requestAnimationFrame(updateTrail);
-            }
-            
-            updateTrail();
-            
-            document.addEventListener('mouseleave', () => {
-                trail.style.opacity = '0';
-            });
         }
+    );
+});
 
-
-        function initTerminal() {
-            const terminal = document.getElementById('cyber-terminal');
-            const toggleBtn = document.getElementById('terminal-toggle');
-            const closeBtn = terminal.querySelector('.control.close');
-            const terminalInput = terminal.querySelector('.terminal-input');
-            const terminalContent = terminal.querySelector('.terminal-content');
-            
-            toggleBtn.addEventListener('click', () => {
-                if (terminal.style.display === 'flex') {
-                    terminal.style.display = 'none';
+// Stats counter animation with GSAP
+const statNumbers = document.querySelectorAll('.stat-number');
+statNumbers.forEach(stat => {
+    const target = parseInt(stat.parentElement.getAttribute('data-count'));
+    
+    ScrollTrigger.create({
+        trigger: stat,
+        start: 'top 80%',
+        onEnter: () => {
+            let current = 0;
+            const increment = target / 50;
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    stat.textContent = Math.floor(current);
+                    requestAnimationFrame(updateCounter);
                 } else {
-                    terminal.style.display = 'flex';
-                    terminalInput.focus();
+                    stat.textContent = target;
                 }
-            });
-            
-            closeBtn.addEventListener('click', () => {
-                terminal.style.display = 'none';
-            });
-            
-            terminalInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    const command = terminalInput.value.trim();
-                    terminalInput.value = '';
-   
-                    const commandLine = document.createElement('div');
-                    commandLine.className = 'terminal-line';
-                    commandLine.textContent = `> ${command}`;
-                    terminalContent.appendChild(commandLine);
-                    
-                    processTerminalCommand(command);
-                    
-          
-                    terminalContent.scrollTop = terminalContent.scrollHeight;
-                }
-            });
-            
-            function processTerminalCommand(command) {
-                const responseLine = document.createElement('div');
-                responseLine.className = 'terminal-line';
-                
-                switch(command.toLowerCase()) {
-                    case 'help':
-                        responseLine.innerHTML = `
-                            Available commands:<br>
-                            - help: Show this help message<br>
-                            - about: Learn about the developer<br>
-                            - skills: View technical skills<br>
-                            - projects: List projects<br>
-                            - contact: Get contact information<br>
-                            - clear: Clear terminal<br>
-                            - theme [light/dark]: Change theme
-                        `;
-                        break;
-                    case 'about':
-                        responseLine.textContent = '> I\'m a passionate CS student specializing in immersive web experiences and full-stack development.';
-                        break;
-                    case 'skills':
-                        responseLine.textContent = '> C#, ASP.NET, Blazor, JavaScript, HTML, CSS, PHP, Node.js, SQL';
-                        break;
-                    case 'projects':
-                        responseLine.textContent = '> Inventory Management System, E-commerce System, PDF summarizer, Note-Taking App, Events Platform';
-                        break;
-                    case 'contact':
-                        responseLine.textContent = '> Email: drixyl.nacu@gmail.com | GitHub: https://github.com/DrexReeeeee';
-                        break;
-                    case 'clear':
-                        terminalContent.innerHTML = `
-                            <div class="terminal-line">> Terminal cleared.</div>
-                            <div class="terminal-line">> Type 'help' for commands</div>
-                            <div class="terminal-input-line">
-                                <span class="prompt">></span>
-                                <input type="text" class="terminal-input" placeholder="Type commands here...">
-                            </div>
-                        `;
-                        terminalInput = terminalContent.querySelector('.terminal-input');
-                        terminalInput.focus();
-                        return;
-                    case 'theme light':
-                        document.body.style.setProperty('--dark-purple', '#f0f0f0');
-                        document.body.style.setProperty('--darker-purple', '#e0e0e0');
-                        document.body.style.setProperty('--text-primary', '#333333');
-                        document.body.style.setProperty('--text-secondary', '#666666');
-                        responseLine.textContent = '> Theme changed to light mode';
-                        break;
-                    case 'theme dark':
-                        document.body.style.setProperty('--dark-purple', '#1a0a2e');
-                        document.body.style.setProperty('--darker-purple', '#0f0519');
-                        document.body.style.setProperty('--text-primary', '#e0e0ff');
-                        document.body.style.setProperty('--text-secondary', '#a0a0c0');
-                        responseLine.textContent = '> Theme changed to dark mode';
-                        break;
-                    default:
-                        responseLine.textContent = `> Command not found: ${command}. Type 'help' for available commands.`;
-                }
-                
-                terminalContent.insertBefore(responseLine, terminalContent.lastElementChild);
-            }
+            };
+            updateCounter();
         }
+    });
+});
 
-        // Initialize interactive components
-        function initInteractiveComponents() {
-            // Color toggle
-            document.getElementById('color-toggle').addEventListener('click', function() {
-                const colors = [
-                    { pink: '#ff00ff', purple: '#8a2be2' },
-                    { pink: '#00ffff', purple: '#0080ff' },
-                    { pink: '#ffff00', purple: '#ff8000' },
-                    { pink: '#00ff00', purple: '#008000' }
-                ];
-                
-                const currentPink = getComputedStyle(document.body).getPropertyValue('--neon-pink').trim();
-                let currentIndex = colors.findIndex(c => c.pink === currentPink);
-                const nextIndex = (currentIndex + 1) % colors.length;
-                
-                document.body.style.setProperty('--neon-pink', colors[nextIndex].pink);
-                document.body.style.setProperty('--neon-purple', colors[nextIndex].purple);
-            });
-            
-            // Music toggle
-            document.getElementById('music-toggle').addEventListener('click', function() {
-                this.classList.toggle('active');
-                if (this.classList.contains('active')) {
-                    // In a real implementation, you would play ambient music here
-                    this.innerHTML = '<i class="fas fa-volume-mute"></i><span>Mute Sound</span>';
-                    // Simulate sound with visual feedback
-                    document.body.style.animation = 'pulse 2s infinite';
-                } else {
-                    this.innerHTML = '<i class="fas fa-music"></i><span>Ambient Sound</span>';
-                    document.body.style.animation = 'none';
-                }
-            });
-            
-            // Particle toggle
-            document.getElementById('particle-toggle').addEventListener('click', function() {
-                this.classList.toggle('active');
-                const bgCanvas = document.getElementById('bg-canvas');
-                if (this.classList.contains('active')) {
-                    bgCanvas.style.opacity = '1';
-                } else {
-                    bgCanvas.style.opacity = '0.3';
-                }
-            });
+// Stat bars animation
+const statFills = document.querySelectorAll('.stat-fill');
+statFills.forEach(fill => {
+    const percent = fill.getAttribute('data-percent');
+    
+    ScrollTrigger.create({
+        trigger: fill,
+        start: 'top 80%',
+        onEnter: () => {
+            fill.style.width = percent + '%';
         }
+    });
+});
 
-        // Initialize skill bars animation
-        function initSkillBars() {
-            const skillBars = document.querySelectorAll('.skill-fill');
-            
-  
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const skillFill = entry.target;
-                        const skillLevel = skillFill.getAttribute('data-skill');
-                        skillFill.style.width = skillLevel + '%';
-                        observer.unobserve(skillFill);
-                    }
-                });
-            }, { threshold: 0.5 });
-            
-            skillBars.forEach(bar => {
-                observer.observe(bar);
-            });
-        }
+// =========================================
+// 5. 3D PROJECTS CAROUSEL 
+// =========================================
 
-
-        function initTechOrbit() {
-            const techIconsContainer = document.querySelector('.tech-icons');
-            const techInfoPanel = document.querySelector('.tech-info-panel');
-            const techName = techInfoPanel.querySelector('.tech-name');
-            const techDescription = techInfoPanel.querySelector('.tech-description');
-            const skillDots = techInfoPanel.querySelectorAll('.skill-dots .dot');
-            const projectsCount = techInfoPanel.querySelector('.projects-count');
-            
-            const technologies = [
-                { 
-                    name: 'HTML5', 
-                    icon: 'fab fa-html5', 
-                    description: 'Semantic markup and modern HTML5 features',
-                    skill: 4,
-                    projects: 8
-                },
-                { 
-                    name: 'CSS3', 
-                    icon: 'fab fa-css3-alt', 
-                    description: 'Advanced styling, animations, and responsive design',
-                    skill: 4,
-                    projects: 8
-                },
-                { 
-                    name: 'JavaScript', 
-                    icon: 'fab fa-js', 
-                    description: 'ES6+, DOM manipulation, and interactive web features',
-                    skill: 4,
-                    projects: 6
-                },
-                { 
-                    name: 'C#', 
-                    icon: 'fab fa-microsoft', 
-                    description: 'Object-oriented programming with .NET ecosystem',
-                    skill: 4,
-                    projects: 1
-                },
-                { 
-                    name: 'ASP.NET', 
-                    icon: 'fas fa-globe', 
-                    description: 'Web application framework for building dynamic sites',
-                    skill: 3,
-                    projects: 3
-                },
-                { 
-                    name: 'Blazor', 
-                    icon: 'fas fa-bolt', 
-                    description: 'Interactive web UIs using C# instead of JavaScript',
-                    skill: 3,
-                    projects: 2
-                },
-                { 
-                    name: 'PHP', 
-                    icon: 'fab fa-php', 
-                    description: 'Server-side scripting for web development',
-                    skill: 3,
-                    projects: 4
-                },
-                { 
-                    name: 'Node.js', 
-                    icon: 'fab fa-node-js', 
-                    description: 'JavaScript runtime for server-side development',
-                    skill: 2,
-                    projects: 2
-                },
-                { 
-                    name: 'SQL', 
-                    icon: 'fas fa-database', 
-                    description: 'Database management and querying',
-                    skill: 3,
-                    projects: 5
-                }
-            ];
-            
-            // Create tech icons
-            technologies.forEach((tech, index) => {
-                const techIcon = document.createElement('div');
-                techIcon.className = 'tech-icon';
-                techIcon.setAttribute('data-tooltip', tech.name);
-                techIcon.innerHTML = `<i class="${tech.icon}"></i>`;
-                
-                const angle = (index / technologies.length) * Math.PI * 2;
-                const radius = 200;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                
-                techIcon.style.transform = `translate(calc(-50% + ${x}px), calc(-50% + ${y}px))`;
-          
-                techIcon.addEventListener('click', () => {
-                 
-                    techName.textContent = tech.name;
-                    techDescription.textContent = tech.description;
-                    projectsCount.textContent = tech.projects;
-                    
-              
-                    skillDots.forEach((dot, i) => {
-                        if (i < tech.skill) {
-                            dot.classList.add('active');
-                        } else {
-                            dot.classList.remove('active');
-                        }
-                    });
-                 
-                    techInfoPanel.classList.add('active');
-                    
-                    techIcon.style.animation = 'pulse 0.5s';
-                    setTimeout(() => {
-                        techIcon.style.animation = '';
-                    }, 500);
-                });
-                
-                techIconsContainer.appendChild(techIcon);
-            });
-            
-            let isDragging = false;
-            let startX, startY;
-            let initialRotation = 0;
-            const techOrbit = document.querySelector('.tech-orbit');
-            
-            techOrbit.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.clientX;
-                startY = e.clientY;
-                techOrbit.style.cursor = 'grabbing';
-            });
-            
-            document.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                
-                const deltaX = e.clientX - startX;
-                const rotation = initialRotation + deltaX * 0.5;
-                
-                techIconsContainer.style.transform = `rotate(${rotation}deg)`;
-
-                const techIcons = document.querySelectorAll('.tech-icon');
-                techIcons.forEach(icon => {
-                    icon.style.transform = icon.style.transform.replace(/rotate\([^)]*\)/, '') + ` rotate(${-rotation}deg)`;
-                });
-            });
-            
-            document.addEventListener('mouseup', () => {
-                if (isDragging) {
-                    isDragging = false;
-                    techOrbit.style.cursor = 'grab';
-                    initialRotation = parseFloat(techIconsContainer.style.transform.replace('rotate(', '').replace('deg)', '')) || 0;
-                }
-            });
-        }
-
-        // Initialize interactive journey timeline
-        function initJourneyTimeline() {
-            const journeyNodesContainer = document.querySelector('.journey-nodes');
-            const journeyDetails = document.querySelector('.journey-details');
-            const journeyYear = journeyDetails.querySelector('.journey-year');
-            const journeyDescription = journeyDetails.querySelector('.journey-description');
-            const skillsList = journeyDetails.querySelector('.skills-list');
-            const projectsList = journeyDetails.querySelector('.projects-list');
-            const prevBtn = document.getElementById('timeline-prev');
-            const nextBtn = document.getElementById('timeline-next');
-            
-            const journeyData = [
-                {
-                    year: 'Grade 11',
-                    description: 'Started with C basics, learning programming fundamentals',
-                    skills: ['C Programming', 'Algorithm Basics', 'Problem Solving'],
-                    projects: ['Simple Calculator', 'Number Guessing Game', 'Tic-Tac-Toe']
-                },
-                {
-                    year: 'Grade 12',
-                    description: 'Learned Java basics and built Inventory Management System with Flask',
-                    skills: ['Java', 'HTML', 'CSS', 'JavaScript', 'Python', 'SQLite', 'Flask'],
-                    projects: ['Inventory Management and Point-of-Sale System']
-                },
-                {
-                    year: '1st Year',
-                    description: 'Expanded knowledge in C, JavaScript, HTML, CSS, and PHP',
-                    skills: ['Advanced JavaScript', 'Responsive Design', 'PHP Backend', 'MySQL'],
-                    projects: ['E-commerce Site', 'Coffee Shop Site', 'Appointment and Networking Platform']
-                },
-                {
-                    year: '2nd Year',
-                    description: 'Focus on C#, ASP.NET, Blazor, and exploring Node.js',
-                    skills: ['C#', 'ASP.NET', 'Blazor', 'Node.js'],
-                    projects: ['To Do Application', 'E-Commerce and IMS hybrid platform']
-                },
-                {
-                    year: 'Future',
-                    description: 'Coming Soon - AI/ML, Cloud Computing',
-                    skills: ['Machine Learning', 'Software Architecture'],
-                    projects: ['AI Assistant', 'Cloud Deployment', 'and more...']
-                }
-            ];
-            
-            let currentIndex = 0;
-            
-            // Create journey nodes
-            journeyData.forEach((data, index) => {
-                const journeyNode = document.createElement('div');
-                journeyNode.className = 'journey-node' + (index === journeyData.length - 1 ? ' future' : '');
-                
-                journeyNode.innerHTML = `
-                    <div class="node-orb"></div>
-                    <div class="node-content">
-                        <h3>${data.year}</h3>
-                        <p>${data.description}</p>
-                    </div>
-                `;
-                
-                journeyNode.addEventListener('click', () => {
-                    currentIndex = index;
-                    updateJourneyDetails();
-                    journeyDetails.classList.add('active');
-                });
-                
-                journeyNodesContainer.appendChild(journeyNode);
-            });
-            
-            // Navigation buttons
-            prevBtn.addEventListener('click', () => {
-                currentIndex = Math.max(0, currentIndex - 1);
-                updateJourneyDetails();
-                journeyDetails.classList.add('active');
-            });
-            
-            nextBtn.addEventListener('click', () => {
-                currentIndex = Math.min(journeyData.length - 1, currentIndex + 1);
-                updateJourneyDetails();
-                journeyDetails.classList.add('active');
-            });
-            
-            function updateJourneyDetails() {
-                const data = journeyData[currentIndex];
-                journeyYear.textContent = data.year;
-                journeyDescription.textContent = data.description;
-                
-                skillsList.innerHTML = '';
-                data.skills.forEach(skill => {
-                    const skillTag = document.createElement('span');
-                    skillTag.className = 'skill-tag';
-                    skillTag.textContent = skill;
-                    skillsList.appendChild(skillTag);
-                });
-                
-                projectsList.innerHTML = '';
-                data.projects.forEach(project => {
-                    const projectTag = document.createElement('span');
-                    projectTag.className = 'project-tag';
-                    projectTag.textContent = project;
-                    projectsList.appendChild(projectTag);
-                });
-            }
-            
-            // Make timeline draggable
-            let isTimelineDragging = false;
-            let timelineStartX;
-            let timelineScrollLeft = 0;
-            const journeyPath = document.querySelector('.journey-path');
-            
-            journeyPath.addEventListener('mousedown', (e) => {
-                isTimelineDragging = true;
-                timelineStartX = e.pageX - journeyPath.offsetLeft;
-                timelineScrollLeft = journeyPath.scrollLeft;
-                journeyPath.style.cursor = 'grabbing';
-            });
-            
-            document.addEventListener('mousemove', (e) => {
-                if (!isTimelineDragging) return;
-                e.preventDefault();
-                const x = e.pageX - journeyPath.offsetLeft;
-                const walk = (x - timelineStartX) * 2;
-                journeyPath.scrollLeft = timelineScrollLeft - walk;
-            });
-            
-            document.addEventListener('mouseup', () => {
-                isTimelineDragging = false;
-                journeyPath.style.cursor = 'grab';
-            });
-        }
-
-        // Initialize interactive projects gallery
-        function initProjectsGallery() {
-            const projectsGallery = document.querySelector('.projects-gallery');
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const projectModal = document.getElementById('project-modal');
-            const modalClose = projectModal.querySelector('.modal-close');
-            
-            const projectsData = [
+const projectsData = [
+    {
+        title: 'SmartNotes',
+        description: 'A smart note-taking web app integrated with OpenRouter AI for PDF summarization. Users can add, edit, and delete notes while generating AI-based summaries.',
+        tech: ['HTML', 'CSS', 'C#', 'ASP.NET', 'Blazor'],
+        features: [
+            'Upload and summarize PDF documents',
+            'AI-assisted text summarization',
+            'Add, edit, and delete notes',
+            'Collaborative note editing integration',
+            'Pixel-themed retro 8-bit user interface'
+        ],
+        category: 'csharp',
+        image: 'images/smartnotes.png',
+        github: 'https://github.com/DrexReeeeee/SmartNotes',
+        demo: 'https://github.com/DrexReeeeee/SmartNotes'
+    },
     {
         title: 'BELLE',
         description: 'A multi-role system featuring a customer side for ordering and checkout, a cashier interface for receiving orders, and an admin dashboard for inventory management and tracking.',
@@ -710,20 +251,24 @@
         demo: 'https://cebuplantdepot.dcism.org/'
     },
     {
-        title: 'SmartNotes',
-        description: 'A smart note-taking web app integrated with OpenRouter AI for PDF summarization. Users can add, edit, and delete notes while generating AI-based summaries.',
-        tech: ['HTML', 'CSS', 'C#', 'ASP.NET', 'Blazor'],
+        title: 'Sign of Affection',
+        description: 'An interactive web-based sign language experience that allows users to express emotions and messages through customizable visual cards, real-time gesture recognition, and shareable digital memories.',
+        tech: ['HTML', 'CSS', 'JavaScript', 'MediaPipe', 'Three.js'],
         features: [
-            'Upload and summarize PDF documents',
-            'AI-assisted text summarization',
-            'Add, edit, and delete notes',
-            'Collaborative note editing integration',
-            'Pixel-themed retro 8-bit user interface'
+            'Real-time hand gesture recognition powered by MediaPipe',
+            'AI-based sign detection with dynamic visual feedback overlays',
+            'Customizable digital affection cards with text, filters, and animations',
+            'Photo capture and short video recording feature',
+            'Download or instantly share generated sign moments',
+            'Smooth scroll animations and interactive UI transitions',
+            'Gesture-triggered animations and effects',
+            'Optimized real-time tracking with low-latency performance',
+            'Modern responsive design for desktop and mobile devices'
         ],
-        category: 'csharp',
-        image: 'images/smartnotes.png',
-        github: 'https://github.com/DrexReeeeee/SmartNotes',
-        demo: 'https://github.com/DrexReeeeee/SmartNotes'
+        category: 'web-ai',
+        image: 'images/signofaffection.png',
+        github: 'https://github.com/yourusername/sign-of-affection',
+        demo: 'https://your-demo-link.com'
     },
     {
         title: 'Easekolar',
@@ -741,7 +286,7 @@
         github: 'https://github.com/DrexReeeeee/Easkolar',
         demo: 'https://easekolar.dcism.org'
     },
-      {
+    {
         title: 'ToDo App',
         description: 'A simple and intuitive to-do list app that helps users efficiently track and manage their daily tasks. Stay organized, set priorities, and boost productivity with ease.',
         tech: ['HTML', 'CSS', 'Javascript', 'JQuery'],
@@ -755,474 +300,822 @@
         github: 'https://github.com/DrexReeeeee/To-Do_App',
         demo: 'https://to-do-app-green-beta.vercel.app/'
     },
-
     {
-    title: 'PANIC-TYPE',
-    description: 'A psychological horror typing game built with Blazor WebAssembly, where players must type commands to maintain firewall integrity against an awakening AI entity called COGNITO-7.',
-    tech: ['.NET', 'C#', 'JavaScript'],
-    features: [
-        'Emotion-driven interactive gameplay mechanics',
-        'Dynamic UI behavior based on user input',
-        'Real-time feedback and state changes',
-        'Clean backend logic using .NET',
-        'Optimized for performance and responsiveness'
-    ],
-    category: 'web',
-    image: 'images/Panic-Type.png',
-    github: 'https://github.com/DrexReeeeee/Panic-Type',
-    demo: 'https://github.com/DrexReeeeee/Panic-Type'
-}
-
+        title: 'PANIC-TYPE',
+        description: 'A psychological horror typing game built with Blazor WebAssembly, where players must type commands to maintain firewall integrity against an awakening AI entity called COGNITO-7.',
+        tech: ['.NET', 'C#', 'JavaScript'],
+        features: [
+            'Emotion-driven interactive gameplay mechanics',
+            'Dynamic UI behavior based on user input',
+            'Real-time feedback and state changes',
+            'Clean backend logic using .NET',
+            'Optimized for performance and responsiveness'
+        ],
+        category: 'web',
+        image: 'images/Panic-Type.png',
+        github: 'https://github.com/DrexReeeeee/Panic-Type',
+        demo: 'https://github.com/DrexReeeeee/Panic-Type'
+    }
 ];
 
-            
-             function renderProjects(filter = 'all') {
-        projectsGallery.innerHTML = '';
+const wrapper = document.getElementById('projectsWrapper');
+if (wrapper) {
+    // Clear existing content
+    wrapper.innerHTML = '';
+    
+    // Inject Slides with enhanced design
+    projectsData.forEach((p, index) => {
+        const slide = document.createElement('div');
+        slide.className = 'swiper-slide';
+        slide.setAttribute('data-swiper-autoplay', '5000');
         
-        const filteredProjects = filter === 'all' 
-            ? projectsData 
-            : projectsData.filter(project => project.category === filter);
+        // Create tech tags HTML
+        const techTags = p.tech.map(t => `<span class="project-tech-tag">${t}</span>`).join('');
         
-        filteredProjects.forEach((project, index) => {
-            const projectCard = document.createElement('div');
-            projectCard.className = 'project-card';
-            projectCard.setAttribute('data-category', project.category);
-            
-            projectCard.innerHTML = `
-                <div class="card-inner">
-                    <div class="card-front">
-                        <div class="project-image">
-                            <img src="${project.image}" alt="${project.title}" onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\\'fas fa-image\\'></i>';">
+        // Create features HTML (first 3 features)
+        const features = p.features.slice(0, 3).map(f => `<li><i class="fas fa-check-circle"></i> ${f}</li>`).join('');
+        
+        slide.innerHTML = `
+            <div class="project-card-3d">
+                <div class="project-card-inner">
+                    <div class="project-card-front">
+                        <div class="project-image-container">
+                            <img src="${p.image}" alt="${p.title}" class="project-image" onerror="this.src='https://via.placeholder.com/600x400/1a1a2a/9b4dca?text=${p.title.replace(' ', '+')}'">
+                            <div class="project-image-overlay">
+                                <div class="project-category">${p.category}</div>
+                                <h3 class="project-title">${p.title}</h3>
+                            </div>
                         </div>
-                        <h3>${project.title}</h3>
-                        <p>${project.description.substring(0, 100)}...</p>
-                        <div class="tech-tags">
-                            ${project.tech.map(tech => `<span>${tech}</span>`).join('')}
+                        <div class="project-tech-strip">
+                            ${techTags}
                         </div>
                     </div>
-                    <div class="card-back">
-                        <h3>${project.title}</h3>
-                        <p>${project.description}</p>
-                        <div class="tech-used">
-                            ${project.tech.map(tech => `<span>${tech}</span>`).join('')}
+                    <div class="project-card-back">
+                        <h3 class="project-back-title">${p.title}</h3>
+                        <p class="project-description">${p.description}</p>
+                        <div class="project-features">
+                            <h4>Key Features:</h4>
+                            <ul class="features-list">
+                                ${features}
+                            </ul>
                         </div>
                         <div class="project-links">
-                            <a href="${project.github}" target="_blank" class="project-link github-link">
-                                <i class="fab fa-github"></i> Source Code
+                            <a href="${p.github}" target="_blank" class="project-link github">
+                                <i class="fab fa-github"></i> Code
                             </a>
-                            <a href="${project.demo}" target="_blank" class="project-link demo-link">
-                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            <a href="${p.demo}" target="_blank" class="project-link demo">
+                                <i class="fas fa-external-link-alt"></i> Demo
                             </a>
                         </div>
-                        <a href="#" class="project-link view-details" data-index="${index}">View Details</a>
                     </div>
                 </div>
-            `;
-            
-            projectsGallery.appendChild(projectCard);
-        });
-        
-        // Add event listeners to view details buttons
-        document.querySelectorAll('.view-details').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const index = parseInt(btn.getAttribute('data-index'));
-                openProjectModal(index);
-            });
-        });
-    }
-    
-    // Filter projects
-    filterBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            filterBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderProjects(btn.getAttribute('data-filter'));
-        });
+            </div>
+        `;
+        wrapper.appendChild(slide);
     });
-    
-// Open project modal
-function openProjectModal(index) {
-    const project = projectsData[index];
-    const modal = projectModal;
-    const modalTitle = modal.querySelector('.modal-title');
-    const modalTech = modal.querySelector('.modal-tech');
-    const modalImage = modal.querySelector('.modal-image');
-    const modalDescription = modal.querySelector('.modal-description p');
-    const featuresList = modal.querySelector('.features-list');
-    const liveDemoLink = modal.querySelector('.live-demo');
-    const sourceCodeLink = modal.querySelector('.source-code');
-    
-    // Update modal content
-    modalTitle.textContent = project.title;
-    modalTech.innerHTML = project.tech.map(tech => 
-        `<span class="tech-tag">${tech}</span>`
-    ).join('');
-    
-    // Use actual image in modal instead of icon
-    modalImage.innerHTML = `
-        <img src="${project.image}" alt="${project.title}" 
-             onerror="this.style.display='none'; this.parentNode.innerHTML='<i class=\\'fas fa-image\\'></i>';">
-    `;
-    
-    modalDescription.textContent = project.description;
-    
-    // Update features list
-    featuresList.innerHTML = project.features.map(feature => 
-        `<li>${feature}</li>`
-    ).join('');
-    
-    // Update the links - only if they exist in the project data
-    if (project.github) {
-        sourceCodeLink.href = project.github;
-        sourceCodeLink.target = '_blank';
-        sourceCodeLink.style.display = 'flex';
-        // Prevent the modal from closing when clicking links
-        sourceCodeLink.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-    } else {
-        sourceCodeLink.style.display = 'none';
-    }
-    
-    if (project.demo) {
-        liveDemoLink.href = project.demo;
-        liveDemoLink.target = '_blank';
-        liveDemoLink.style.display = 'flex';
-        // Prevent the modal from closing when clicking links
-        liveDemoLink.addEventListener('click', (e) => {
-            e.stopPropagation();
-        });
-    } else {
-        liveDemoLink.style.display = 'none';
-    }
-    
-    // Show modal
-    modal.classList.add('active');
-}
-    
-    modalClose.addEventListener('click', () => {
-        projectModal.classList.remove('active');
-    });
-    
-    // Close modal when clicking outside
-    projectModal.addEventListener('click', (e) => {
-        if (e.target === projectModal) {
-            projectModal.classList.remove('active');
+
+    // Initialize Swiper with enhanced smooth settings
+    const swiper = new Swiper('.project-swiper', {
+        effect: 'coverflow',
+        grabCursor: true,
+        centeredSlides: true,
+        slidesPerView: 'auto',
+        initialSlide: 2,
+        speed: 1000,
+        loop: true,
+        autoplay: {
+            delay: 4000,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+        },
+        coverflowEffect: {
+            rotate: 20,
+            stretch: 0,
+            depth: 200,
+            modifier: 1,
+            slideShadows: true,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+            dynamicBullets: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        on: {
+            init: function () {
+                this.el.addEventListener('mouseenter', () => {
+                    this.autoplay.stop();
+                });
+                this.el.addEventListener('mouseleave', () => {
+                    this.autoplay.start();
+                });
+            }
+        },
+        breakpoints: {
+            320: {
+                slidesPerView: 1,
+                spaceBetween: 20
+            },
+            640: {
+                slidesPerView: 'auto',
+                spaceBetween: 30
+            }
         }
     });
-    
-    // Initial render
-    renderProjects();
+
+    // Add smooth transition on hover
+    const cards = document.querySelectorAll('.project-card-3d');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale3d(1, 1, 1)';
+        });
+    });
 }
 
-        // Initialize cyber pad
-        function initCyberPad() {
-            const padCells = document.querySelectorAll('.pad-cell');
-            const playBtn = document.getElementById('pad-play');
-            const clearBtn = document.getElementById('pad-clear');
-            let sequence = [];
-            let isPlaying = false;
+// =========================================
+// 6. TECH LAB GAME (THREE.JS)
+// =========================================
+
+const initTechGame = () => {
+    const container = document.getElementById('tech-game-container');
+    if (!container) return;
+
+    // 1. Scene & Camera
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x0a0a0a);
+    scene.fog = new THREE.FogExp2(0x0a0a0a, 0.02);
+
+    const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 8, 12);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    container.appendChild(renderer.domElement);
+
+    // 2. Lights
+    const ambientLight = new THREE.AmbientLight(0x404060, 0.6);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0x9b4dca, 1.5);
+    dirLight.position.set(10, 20, 10);
+    dirLight.castShadow = true;
+    dirLight.shadow.mapSize.width = 1024;
+    dirLight.shadow.mapSize.height = 1024;
+    scene.add(dirLight);
+
+    // Add point lights for atmosphere
+    const pointLight1 = new THREE.PointLight(0x9b4dca, 1, 20);
+    pointLight1.position.set(5, 5, 5);
+    scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0x7a32a8, 1, 20);
+    pointLight2.position.set(-5, 5, -5);
+    scene.add(pointLight2);
+
+    // 3. Environment (Grid Floor)
+    const gridHelper = new THREE.GridHelper(60, 60, 0x9b4dca, 0x2a2a4a);
+    gridHelper.position.y = 0;
+    scene.add(gridHelper);
+
+    const planeGeo = new THREE.PlaneGeometry(60, 60);
+    const planeMat = new THREE.MeshStandardMaterial({ 
+        color: 0x0a0a1a, 
+        roughness: 0.7,
+        metalness: 0.1,
+        emissive: 0x1a1a2a
+    });
+    const plane = new THREE.Mesh(planeGeo, planeMat);
+    plane.rotation.x = -Math.PI / 2;
+    plane.position.y = -0.1;
+    plane.receiveShadow = true;
+    scene.add(plane);
+
+    // 4. Player (The Cube)
+    const playerGeo = new THREE.BoxGeometry(1, 1, 1);
+    const playerMat = new THREE.MeshStandardMaterial({ 
+        color: 0x9b4dca, 
+        emissive: 0x4a1a6a, 
+        emissiveIntensity: 0.5,
+        metalness: 0.3,
+        roughness: 0.2
+    });
+    const player = new THREE.Mesh(playerGeo, playerMat);
+    player.position.y = 0.5;
+    player.castShadow = true;
+    player.receiveShadow = true;
+    scene.add(player);
+
+    const playerLight = new THREE.PointLight(0x9b4dca, 2, 8);
+    playerLight.position.set(0, 1, 0);
+    player.add(playerLight);
+
+    // Add floating particles around player
+    const particleGeo = new THREE.BufferGeometry();
+    const particleCount = 20;
+    const particlePositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+        const angle = (i / particleCount) * Math.PI * 2;
+        particlePositions[i * 3] = Math.cos(angle) * 1.5;
+        particlePositions[i * 3 + 1] = 0.5;
+        particlePositions[i * 3 + 2] = Math.sin(angle) * 1.5;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+    const particleMat = new THREE.PointsMaterial({ color: 0x9b4dca, size: 0.05, transparent: true });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    player.add(particles);
+
+    // 5. Tech Monoliths
+    const techs = [
+        { name: "C# .NET", val: 90, x: 0, z: -6, color: "#9b4dca" },
+        { name: "ASP.NET Core", val: 85, x: -6, z: -3, color: "#a55dda" },
+        { name: "Blazor", val: 85, x: 6, z: -3, color: "#b06ae0" },
+        { name: "React", val: 75, x: -4, z: 4, color: "#9b4dca" },
+        { name: "Node.js", val: 70, x: 4, z: 4, color: "#a55dda" },
+        { name: "PHP", val: 80, x: -8, z: 0, color: "#b06ae0" },
+        { name: "JavaScript", val: 85, x: 8, z: 0, color: "#9b4dca" },
+        { name: "MySQL", val: 80, x: 0, z: 8, color: "#a55dda" },
+        { name: "Entity Framework", val: 80, x: -5, z: -8, color: "#b06ae0" },
+        { name: "Three.js", val: 75, x: 5, z: -8, color: "#9b4dca" }
+    ];
+
+    const techObjects = [];
+
+    // Helper: Create Text Texture
+    function createTextTexture(text) {
+        const cvs = document.createElement('canvas');
+        cvs.width = 512;
+        cvs.height = 256;
+        const ctx = cvs.getContext('2d');
+        
+        // Background
+        ctx.fillStyle = 'rgba(26, 26, 46, 0.9)';
+        ctx.fillRect(0, 0, 512, 256);
+        
+        // Border
+        ctx.strokeStyle = '#9b4dca';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(2, 2, 508, 252);
+        
+        // Text
+        ctx.font = 'bold 60px "Syne", sans-serif';
+        ctx.fillStyle = '#9b4dca';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(text, 256, 128);
+        
+        // Glow effect
+        ctx.shadowColor = '#9b4dca';
+        ctx.shadowBlur = 15;
+        ctx.fillText(text, 256, 128);
+        
+        return new THREE.CanvasTexture(cvs);
+    }
+
+    techs.forEach((t, index) => {
+        // Pillar
+        const geo = new THREE.BoxGeometry(1.5, 3, 1.5);
+        const mat = new THREE.MeshStandardMaterial({ 
+            color: 0x222222, 
+            metalness: 0.8, 
+            roughness: 0.2,
+            emissive: 0x1a1a2a
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.set(t.x, 1.5, t.z);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.userData = { ...t, id: index };
+        
+        // Add glow rings
+        const ringGeo = new THREE.TorusGeometry(1, 0.1, 16, 32);
+        const ringMat = new THREE.MeshStandardMaterial({ color: t.color, emissive: t.color, transparent: true, opacity: 0.3 });
+        const ring = new THREE.Mesh(ringGeo, ringMat);
+        ring.rotation.x = Math.PI / 2;
+        ring.position.y = 0.5;
+        mesh.add(ring);
+        
+        scene.add(mesh);
+        techObjects.push(mesh);
+
+        // Floating Label
+        const labelGeo = new THREE.PlaneGeometry(3, 1.5);
+        const labelMat = new THREE.MeshBasicMaterial({ 
+            map: createTextTexture(t.name), 
+            transparent: true, 
+            side: THREE.DoubleSide 
+        });
+        const label = new THREE.Mesh(labelGeo, labelMat);
+        label.position.y = 2.5;
+        label.position.z = 0.8;
+        label.lookAt(camera.position);
+        mesh.add(label);
+    });
+
+    // Add floating orbs
+    const orbCount = 30;
+    const orbs = [];
+    for (let i = 0; i < orbCount; i++) {
+        const orbGeo = new THREE.SphereGeometry(0.1, 8, 8);
+        const orbMat = new THREE.MeshStandardMaterial({ 
+            color: 0x9b4dca,
+            emissive: 0x4a1a6a,
+            transparent: true,
+            opacity: 0.6
+        });
+        const orb = new THREE.Mesh(orbGeo, orbMat);
+        
+        const angle = (i / orbCount) * Math.PI * 2;
+        const radius = 12;
+        orb.position.x = Math.cos(angle) * radius;
+        orb.position.z = Math.sin(angle) * radius;
+        orb.position.y = Math.sin(angle * 2) * 2 + 2;
+        
+        scene.add(orb);
+        orbs.push(orb);
+    }
+
+    // 6. Game Logic
+    const keys = { w:false, a:false, s:false, d:false, shift:false };
+    const speed = 0.15;
+    const runSpeed = 0.25;
+
+    document.addEventListener('keydown', e => {
+        const k = e.key.toLowerCase();
+        if(keys.hasOwnProperty(k)) keys[k] = true;
+        if(k === 'shift') keys.shift = true;
+        if(e.key.startsWith('Arrow')) {
+            if(e.key==='ArrowUp') keys.w = true;
+            if(e.key==='ArrowDown') keys.s = true;
+            if(e.key==='ArrowLeft') keys.a = true;
+            if(e.key==='ArrowRight') keys.d = true;
+            e.preventDefault();
+        }
+    });
+
+    document.addEventListener('keyup', e => {
+        const k = e.key.toLowerCase();
+        if(keys.hasOwnProperty(k)) keys[k] = false;
+        if(k === 'shift') keys.shift = false;
+        if(e.key.startsWith('Arrow')) {
+            if(e.key==='ArrowUp') keys.w = false;
+            if(e.key==='ArrowDown') keys.s = false;
+            if(e.key==='ArrowLeft') keys.a = false;
+            if(e.key==='ArrowRight') keys.d = false;
+        }
+    });
+
+    // UI Elements
+    const ui = document.getElementById('tech-info-panel');
+    const uiName = document.getElementById('tech-name');
+    const uiBar = document.getElementById('tech-level-bar');
+    const uiText = document.getElementById('tech-level-text');
+
+    let time = 0;
+
+    function animate() {
+        requestAnimationFrame(animate);
+        time += 0.01;
+
+        // Move Player
+        const currentSpeed = keys.shift ? runSpeed : speed;
+        if(keys.w) player.position.z -= currentSpeed;
+        if(keys.s) player.position.z += currentSpeed;
+        if(keys.a) player.position.x -= currentSpeed;
+        if(keys.d) player.position.x += currentSpeed;
+
+        // Clamp to grid
+        player.position.x = Math.max(-15, Math.min(15, player.position.x));
+        player.position.z = Math.max(-15, Math.min(15, player.position.z));
+
+        // Rotate player based on movement
+        if (keys.w || keys.s || keys.a || keys.d) {
+            player.rotation.y += 0.05;
+        }
+
+        // Camera Follow (Smooth)
+        camera.position.x += (player.position.x - camera.position.x) * 0.1;
+        camera.position.z += (player.position.z + 8 - camera.position.z) * 0.1;
+        camera.position.y += (player.position.y + 4 - camera.position.y) * 0.1;
+        camera.lookAt(player.position);
+
+        // Animate orbs
+        orbs.forEach((orb, i) => {
+            orb.position.y = Math.sin(time * 2 + i) * 2 + 2;
+        });
+
+        // Check Interactions
+        let near = false;
+        let nearestDist = Infinity;
+        let nearestObj = null;
+
+        techObjects.forEach(obj => {
+            // Float animation
+            obj.position.y = 1.5 + Math.sin(time * 2 + obj.userData.id) * 0.2;
             
-            // Add click events to pad cells
-            padCells.forEach(cell => {
-                cell.addEventListener('click', () => {
-                    if (isPlaying) return;
-                    
-                    const soundId = cell.getAttribute('data-sound');
-                    playSound(soundId);
+            // Rotate rings
+            if (obj.children[0]) {
+                obj.children[0].rotation.z += 0.01;
+            }
+
+            // Distance Check
+            const dist = player.position.distanceTo(new THREE.Vector3(obj.position.x, 0.5, obj.position.z));
+            
+            if(dist < 3) {
+                obj.material.emissive.setHex(0x333333);
+                obj.material.emissiveIntensity = 0.5;
+                
+                if (dist < nearestDist) {
+                    nearestDist = dist;
+                    nearestObj = obj;
+                }
+            } else {
+                obj.material.emissive.setHex(0x000000);
+            }
+        });
+
+        if (nearestObj && nearestDist < 2.5) {
+            near = true;
+            const obj = nearestObj;
+            
+            // Highlight nearest
+            obj.material.emissive.set(obj.userData.color);
+            obj.material.emissiveIntensity = 0.8;
+
+            // Update UI
+            ui.classList.add('active');
+            uiName.textContent = obj.userData.name;
+            uiBar.style.width = obj.userData.val + "%";
+            uiText.textContent = `MASTERY: ${obj.userData.val}%`;
+        } else {
+            ui.classList.remove('active');
+        }
+
+        renderer.render(scene, camera);
+    }
+    animate();
+
+    // Resize
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+};
+
+// Start Game when DOM ready
+document.addEventListener('DOMContentLoaded', initTechGame);
+
+// =========================================
+// 7. JOURNEY TIMELINE
+// =========================================
+
+const journeyData = [
+    {
+        year: 'Grade 11',
+        description: 'Started with C basics, learning programming fundamentals',
+        skills: ['C Programming', 'Algorithm Basics', 'Problem Solving'],
+        projects: ['Simple Calculator', 'Number Guessing Game', 'Tic-Tac-Toe']
+    },
+    {
+        year: 'Grade 12',
+        description: 'Learned Java basics and built Inventory Management System with Flask',
+        skills: ['Java', 'HTML', 'CSS', 'JavaScript', 'Python', 'SQLite', 'Flask'],
+        projects: ['Inventory Management and Point-of-Sale System']
+    },
+    {
+        year: '1st Year College',
+        description: 'Expanded knowledge in C, JavaScript, HTML, CSS, and PHP',
+        skills: ['Advanced JavaScript', 'Responsive Design', 'PHP Backend', 'MySQL'],
+        projects: ['E-commerce Site', 'Coffee Shop Site', 'Appointment Platform']
+    },
+    {
+        year: '2nd Year College',
+        description: 'Focus on C#, ASP.NET, Blazor, and exploring Node.js',
+        skills: ['C#', 'ASP.NET', 'Blazor', 'Node.js', 'Entity Framework'],
+        projects: ['SmartNotes', 'EaseKolar', 'PANIC-TYPE', 'ToDo App']
+    },
+    {
+        year: 'Future',
+        description: 'Planning to explore AI/ML, Cloud Computing, Microservices',
+        skills: ['Machine Learning', 'Cloud Architecture', 'DevOps'],
+        projects: ['AI Assistant', 'Cloud Platform', 'Mobile Apps']
+    }
+];
+
+const journeyNodesContainer = document.getElementById('journeyNodes');
+const journeyYear = document.querySelector('.journey-year');
+const journeyDescription = document.querySelector('.journey-description');
+const journeySkills = document.getElementById('journeySkills');
+const journeyProjects = document.getElementById('journeyProjects');
+const prevBtn = document.getElementById('timeline-prev');
+const nextBtn = document.getElementById('timeline-next');
+
+if (journeyNodesContainer) {
+    let currentIndex = 0;
+    
+    // Create journey nodes
+    journeyData.forEach((data, index) => {
+        const journeyNode = document.createElement('div');
+        journeyNode.className = 'journey-node' + (index === journeyData.length - 1 ? ' future' : '');
+        
+        journeyNode.innerHTML = `
+            <div class="node-orb"></div>
+            <div class="node-content">
+                <h3>${data.year}</h3>
+                <p>${data.description.substring(0, 50)}...</p>
+            </div>
+        `;
+        
+        journeyNode.addEventListener('click', () => {
+            currentIndex = index;
+            updateJourneyDetails();
+            
+            // Highlight active node
+            document.querySelectorAll('.journey-node').forEach((node, i) => {
+                if (i === index) {
+                    node.style.transform = 'scale(1.1)';
+                } else {
+                    node.style.transform = 'scale(1)';
+                }
+            });
+        });
+        
+        journeyNodesContainer.appendChild(journeyNode);
+    });
+    
+    // Navigation buttons
+    if (prevBtn && nextBtn) {
+        prevBtn.addEventListener('click', () => {
+            currentIndex = Math.max(0, currentIndex - 1);
+            updateJourneyDetails();
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            currentIndex = Math.min(journeyData.length - 1, currentIndex + 1);
+            updateJourneyDetails();
+        });
+    }
+    
+    function updateJourneyDetails() {
+        const data = journeyData[currentIndex];
+        if (journeyYear) journeyYear.textContent = data.year;
+        if (journeyDescription) journeyDescription.textContent = data.description;
+        
+        if (journeySkills) {
+            journeySkills.innerHTML = '';
+            data.skills.forEach(skill => {
+                const skillTag = document.createElement('span');
+                skillTag.className = 'skill-tag';
+                skillTag.textContent = skill;
+                journeySkills.appendChild(skillTag);
+            });
+        }
+        
+        if (journeyProjects) {
+            journeyProjects.innerHTML = '';
+            data.projects.forEach(project => {
+                const projectTag = document.createElement('span');
+                projectTag.className = 'project-tag';
+                projectTag.textContent = project;
+                journeyProjects.appendChild(projectTag);
+            });
+        }
+    }
+    
+    // Make timeline draggable
+    const journeyPath = document.querySelector('.journey-path');
+    if (journeyPath) {
+        let isTimelineDragging = false;
+        let timelineStartX;
+        let timelineScrollLeft = 0;
+        
+        journeyPath.addEventListener('mousedown', (e) => {
+            isTimelineDragging = true;
+            timelineStartX = e.pageX - journeyPath.offsetLeft;
+            timelineScrollLeft = journeyPath.scrollLeft;
+            journeyPath.style.cursor = 'grabbing';
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isTimelineDragging) return;
+            e.preventDefault();
+            const x = e.pageX - journeyPath.offsetLeft;
+            const walk = (x - timelineStartX) * 2;
+            journeyPath.scrollLeft = timelineScrollLeft - walk;
+        });
+        
+        document.addEventListener('mouseup', () => {
+            isTimelineDragging = false;
+            journeyPath.style.cursor = 'grab';
+        });
+    }
+}
+
+// =========================================
+// 8. TERMINAL FUNCTIONALITY
+// =========================================
+
+const terminalToggle = document.getElementById('terminal-toggle');
+const cyberTerminal = document.getElementById('cyber-terminal');
+const terminalClose = document.querySelector('.terminal-close');
+const terminalInput = document.querySelector('.terminal-input');
+
+if (terminalToggle && cyberTerminal) {
+    terminalToggle.addEventListener('click', () => {
+        cyberTerminal.classList.toggle('active');
+    });
+}
+
+if (terminalClose) {
+    terminalClose.addEventListener('click', () => {
+        cyberTerminal.classList.remove('active');
+    });
+}
+
+// Terminal commands
+if (terminalInput) {
+    terminalInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const command = terminalInput.value.toLowerCase();
+            const terminalContent = document.querySelector('.terminal-content');
+            
+            // Add command to terminal
+            const commandLine = document.createElement('div');
+            commandLine.className = 'terminal-line';
+            commandLine.innerHTML = `> ${terminalInput.value}`;
+            terminalContent.insertBefore(commandLine, terminalContent.lastElementChild);
+            
+            // Process command
+            let response = '';
+            switch(command) {
+                case 'help':
+                    response = 'Available commands: about, skills, projects, experience, education, contact, clear';
+                    break;
+                case 'about':
+                    response = 'Drixyl Nacu - 2nd year CS student specializing in full-stack development. Passionate about immersive web experiences and C#/.NET development.';
+                    break;
+                case 'skills':
+                    response = 'C#, ASP.NET Core, Blazor, React, Node.js, PHP, MySQL, Three.js, JavaScript, HTML/CSS';
+                    break;
+                case 'projects':
+                    response = 'SmartNotes (AI PDF Summarizer), EaseKolar (Scholarship Matcher), EVE (Booking Platform), PANIC-TYPE (Horror Game), Cebu Plant Depot (E-commerce)';
+                    break;
+                case 'experience':
+                    response = 'Software Engineering Intern @ e-Permits System (2025-Present), Ambassador @ Innovare (2025-Present), POS Developer @ Cebu Plant Depot (2025), OJT @ Qualfon (2024)';
+                    break;
+                case 'education':
+                    response = 'BS Computer Science @ University of San Carlos (2024-Present) - Dean\'s Lister, Senior High @ University of Cebu (2024) - Top 1 with Highest Honors';
+                    break;
+                case 'contact':
+                    response = 'Email: drixyl.nacu@gmail.com | GitHub: DrexReeeeee | LinkedIn: Drixy Reece Irish Nacu';
+                    break;
+                case 'clear':
+                    const lines = document.querySelectorAll('.terminal-line:not(:first-child):not(:nth-child(2)):not(:nth-child(3)):not(:nth-child(4))');
+                    lines.forEach(line => line.remove());
+                    response = 'Terminal cleared.';
+                    break;
+                default:
+                    response = `Command not recognized: ${command}. Type 'help' for available commands.`;
+            }
+            
+            // Show response
+            const responseLine = document.createElement('div');
+            responseLine.className = 'terminal-line';
+            responseLine.style.color = '#9b4dca';
+            responseLine.textContent = response;
+            terminalContent.insertBefore(responseLine, terminalContent.lastElementChild);
+            
+            // Clear input
+            terminalInput.value = '';
+            
+            // Scroll to bottom
+            terminalContent.scrollTop = terminalContent.scrollHeight;
+        }
+    });
+}
+
+// =========================================
+// 9. INTERACTIVE PAD
+// =========================================
+
+const padCells = document.querySelectorAll('.pad-cell');
+if (padCells.length > 0) {
+    padCells.forEach(cell => {
+        cell.addEventListener('click', function() {
+            this.classList.add('active');
+            setTimeout(() => {
+                this.classList.remove('active');
+            }, 200);
+        });
+    });
+    
+    const padPlay = document.getElementById('pad-play');
+    const padClear = document.getElementById('pad-clear');
+    
+    if (padPlay) {
+        padPlay.addEventListener('click', () => {
+            padCells.forEach((cell, index) => {
+                setTimeout(() => {
                     cell.classList.add('active');
-                    sequence.push(soundId);
-                    
                     setTimeout(() => {
                         cell.classList.remove('active');
                     }, 200);
-                });
+                }, index * 100);
             });
-            
-            // Play sequence
-            playBtn.addEventListener('click', () => {
-                if (sequence.length === 0 || isPlaying) return;
-                
-                isPlaying = true;
-                playBtn.disabled = true;
-                
-                let i = 0;
-                const playNext = () => {
-                    if (i >= sequence.length) {
-                        isPlaying = false;
-                        playBtn.disabled = false;
-                        return;
-                    }
-                    
-                    const soundId = sequence[i];
-                    const cell = document.querySelector(`.pad-cell[data-sound="${soundId}"]`);
-                    
-                    cell.classList.add('active');
-                    playSound(soundId);
-                    
-                    setTimeout(() => {
-                        cell.classList.remove('active');
-                        i++;
-                        setTimeout(playNext, 300);
-                    }, 500);
-                };
-                
-                playNext();
-            });
-            
-            // Clear sequence
-            clearBtn.addEventListener('click', () => {
-                sequence = [];
-            });
-            
-            // Play sound (simulated with visual feedback)
-            function playSound(id) {
-                // In a real implementation, you would play actual sounds here
-                const colors = ['#ff00ff', '#8a2be2', '#00ffff', '#ffff00', '#00ff00', '#ff8000', '#ff0080', '#8000ff', '#0080ff'];
-                document.body.style.backgroundColor = colors[id - 1];
-                
-                setTimeout(() => {
-                    document.body.style.backgroundColor = '';
-                }, 200);
-            }
-        }
-
-        // Initialize theme toggle
-        function initThemeToggle() {
-            const themeToggle = document.getElementById('theme-toggle');
-            const resetBtn = document.getElementById('reset-all');
-            
-            themeToggle.addEventListener('click', () => {
-                const currentBg = getComputedStyle(document.body).getPropertyValue('--dark-purple').trim();
-                
-                if (currentBg === '#1a0a2e') {
-                    // Switch to light theme
-                    document.body.style.setProperty('--dark-purple', '#f5f5f5');
-                    document.body.style.setProperty('--darker-purple', '#e0e0e0');
-                    document.body.style.setProperty('--text-primary', '#333333');
-                    document.body.style.setProperty('--text-secondary', '#666666');
-                    themeToggle.innerHTML = '<i class="fas fa-sun"></i> Light Theme';
-                } else {
-                    // Switch to dark theme
-                    document.body.style.setProperty('--dark-purple', '#1a0a2e');
-                    document.body.style.setProperty('--darker-purple', '#0f0519');
-                    document.body.style.setProperty('--text-primary', '#e0e0ff');
-                    document.body.style.setProperty('--text-secondary', '#a0a0c0');
-                    themeToggle.innerHTML = '<i class="fas fa-moon"></i> Dark Theme';
-                }
-            });
-            
-            resetBtn.addEventListener('click', () => {
-                // Reset all interactive elements to default state
-                location.reload();
-            });
-        }
-
-        // Initialize GSAP animations
-        function initAnimations() {
-            // Register ScrollTrigger plugin
-            gsap.registerPlugin(ScrollTrigger);
-            
-            // Animate hero content
-            gsap.from('.hologram-logo', {
-                duration: 2,
-                y: 100,
-                opacity: 0,
-                ease: 'power3.out'
-            });
-            
-            gsap.from('.tagline', {
-                duration: 1.5,
-                y: 50,
-                opacity: 0,
-                delay: 0.5,
-                ease: 'power3.out'
-            });
-            
-            // Animate section titles
-            gsap.utils.toArray('.section-title').forEach(title => {
-                gsap.from(title, {
-                    scrollTrigger: {
-                        trigger: title,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    },
-                    y: 50,
-                    opacity: 0,
-                    duration: 1,
-                    ease: 'power3.out'
-                });
-            });
-            
-            // Animate about panel
-            gsap.from('.holographic-panel', {
-                scrollTrigger: {
-                    trigger: '.holographic-panel',
-                    start: 'top 80%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none reverse'
-                },
-                y: 50,
-                opacity: 0,
-                duration: 1,
-                ease: 'power3.out'
-            });
-            
-            // Animate tech icons
-            gsap.utils.toArray('.tech-icon').forEach((icon, i) => {
-                gsap.from(icon, {
-                    scrollTrigger: {
-                        trigger: '.tech-orbit',
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    },
-                    scale: 0,
-                    rotation: 360,
-                    duration: 0.8,
-                    delay: i * 0.1,
-                    ease: 'back.out(1.7)'
-                });
-            });
-            
-            // Animate journey nodes
-            gsap.utils.toArray('.journey-node').forEach((node, i) => {
-                gsap.from(node, {
-                    scrollTrigger: {
-                        trigger: node,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    },
-                    x: i % 2 === 0 ? -100 : 100,
-                    opacity: 0,
-                    duration: 1,
-                    delay: i * 0.2,
-                    ease: 'power3.out'
-                });
-            });
-            
-            // Animate project cards
-            gsap.utils.toArray('.project-card').forEach((card, i) => {
-                gsap.from(card, {
-                    scrollTrigger: {
-                        trigger: card,
-                        start: 'top 80%',
-                        end: 'bottom 20%',
-                        toggleActions: 'play none none reverse'
-                    },
-                    y: 100,
-                    opacity: 0,
-                    duration: 1,
-                    delay: i * 0.1,
-                    ease: 'power3.out'
-                });
-            });
-            
-            // Animate contact form
-            gsap.from('.contact-form', {
-                scrollTrigger: {
-                    trigger: '.contact-form',
-                    start: 'top 80%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none reverse'
-                },
-                x: -100,
-                opacity: 0,
-                duration: 1,
-                ease: 'power3.out'
-            });
-            
-            gsap.from('.contact-info', {
-                scrollTrigger: {
-                    trigger: '.contact-info',
-                    start: 'top 80%',
-                    end: 'bottom 20%',
-                    toggleActions: 'play none none reverse'
-                },
-                x: 100,
-                opacity: 0,
-                duration: 1,
-                ease: 'power3.out'
-            });
-            
-        
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-          
-            const href = anchor.getAttribute('href');
-            if (href !== '#' && href.length > 1) {
-                anchor.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const target = document.querySelector(targetId);
-                    if (target) {
-                        window.scrollTo({
-                            top: target.offsetTop - 80,
-                            behavior: 'smooth'
-                        });
-                    }
-                });
-            }
         });
-            
-           // Form submission handler for mailto
-            document.getElementById('contactForm').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const form = this;
-                const submitBtn = form.querySelector('.submit-btn');
-                const originalText = submitBtn.querySelector('span').textContent;
+    }
+    
+    if (padClear) {
+        padClear.addEventListener('click', () => {
+            padCells.forEach(cell => {
+                cell.classList.remove('active');
+            });
+        });
+    }
+}
+
+// =========================================
+// 10. MOBILE MENU (Optional Enhancement)
+// =========================================
+
+const menuBtn = document.querySelector('.nav-menu-btn');
+if (menuBtn) {
+    menuBtn.addEventListener('click', () => {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    });
+}
+
+// =========================================
+// 11. ACTIVE NAVIGATION ON SCROLL
+// =========================================
+
+const sections = document.querySelectorAll('section');
+const navLinks = document.querySelectorAll('.nav-link');
+
+window.addEventListener('scroll', () => {
+    let current = '';
+    
+    sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
         
-                const name = document.getElementById('name').value;
-                const email = document.getElementById('email').value;
-                const subject = document.getElementById('subject').value;
-                const message = document.getElementById('message').value;
-   
-                const mailtoLink = `mailto:drixyl.nacu@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage: ${message}`)}`;
-
-                submitBtn.querySelector('span').textContent = 'Opening Email...';
-                submitBtn.style.background = 'var(--neon-pink)';
-                submitBtn.style.color = 'var(--dark-purple)';
-           
-                window.location.href = mailtoLink;
-                
-                setTimeout(() => {
-                    submitBtn.querySelector('span').textContent = originalText;
-                    submitBtn.style.background = 'transparent';
-                    submitBtn.style.color = 'var(--neon-pink)';
-                    form.reset();
-                }, 2000);
-            });
-            
-            document.addEventListener('click', (e) => {
-                for (let i = 0; i < 8; i++) {
-                    const particle = document.createElement('div');
-                    particle.style.position = 'fixed';
-                    particle.style.width = '6px';
-                    particle.style.height = '6px';
-                    particle.style.borderRadius = '50%';
-                    particle.style.background = Math.random() > 0.5 ? 'var(--neon-pink)' : 'var(--neon-purple)';
-                    particle.style.pointerEvents = 'none';
-                    particle.style.zIndex = '9999';
-                    particle.style.left = e.clientX + 'px';
-                    particle.style.top = e.clientY + 'px';
-                    
-                    document.body.appendChild(particle);
-                    
-                    gsap.to(particle, {
-                        x: (Math.random() - 0.5) * 150,
-                        y: (Math.random() - 0.5) * 150,
-                        opacity: 0,
-                        scale: 0,
-                        duration: Math.random() * 1.5 + 0.5,
-                        ease: 'power2.out',
-                        onComplete: () => {
-                            document.body.removeChild(particle);
-                        }
-                    });
-                }
-            });
+        if (window.scrollY >= (sectionTop - 200)) {
+            current = section.getAttribute('id');
         }
+    });
 
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === `#${current}`) {
+            link.classList.add('active');
+        }
+    });
+});
+
+// =========================================
+// 12. PARALLAX EFFECT ON HERO
+// =========================================
+
+window.addEventListener('scroll', () => {
+    const heroContent = document.querySelector('.hero-content');
+    const scrolled = window.scrollY;
+    
+    if (heroContent) {
+        heroContent.style.transform = `translateY(${scrolled * 0.5}px)`;
+        heroContent.style.opacity = 1 - (scrolled * 0.002);
+    }
+});
+
+// =========================================
+// 13. INITIALIZE TOOLTIPS
+// =========================================
+
+const skillItems = document.querySelectorAll('.skill-item');
+skillItems.forEach(item => {
+    const level = item.getAttribute('data-level');
+    if (level) {
+        item.setAttribute('title', `Proficiency: ${level}%`);
+    }
+});
+
+console.log('Portfolio initialized successfully! 🚀');

@@ -4,16 +4,509 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rez.dev | Portfolio</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@400;700;800&family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.59/build/spline-viewer.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="interactive-bg"></div>
+
+    <div class="loading-screen">
+        <div class="loader">
+            <div class="loader-text">REZ.DEV</div>
+            <div class="loader-bar"></div>
+        </div>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-trail"></div>
+    
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">REZ.DEV</a>
+            <div class="nav-links">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#tech" class="nav-link">Tech Lab</a>
+                <a href="#journey" class="nav-link">Journey</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <button class="nav-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <section id="home" class="hero">
+        <div class="hero-spline">
+            <spline-viewer 
+                url="https://prod.spline.design/iGWQ6ZCEqyUJBqoC/scene.splinecode"
+                loading-animation="false"
+                events-target="global">
+            </spline-viewer>
+            <div class="spline-gradient"></div>
+        </div>
+        
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge reveal-text">FULL-STACK DEVELOPER</div>
+                <h1 class="hero-title">
+                    <span class="hero-title-line reveal-text">REZ</span>
+                    <span class="hero-title-line reveal-text">DEV</span>
+                </h1>
+                <div class="hero-subtitle">
+                    <span class="hero-name reveal-text">Drixyl Nacu</span>
+                    <div class="hero-divider"></div>
+                    <div class="hero-typing">
+                        <span class="typing-static">I build </span>
+                        <span class="typing-dynamic" id="typingText"></span>
+                    </div>
+                </div>
+                <div class="hero-actions reveal-text">
+                    <a href="#projects" class="btn-primary">
+                        <span>View Work</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll to explore</span>
+            <div class="arrow"></div>
+        </div>
+    </section>
+
+    <section id="about" class="section about">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">01</span>
+                <h2 class="section-title">About Me</h2>
+            </div>
+            <div class="about-grid">
+                <div class="about-card about-card--large reveal">
+                    <div class="about-card-content">
+                        <p class="about-highlight">Second-year Computer Science student specializing in immersive web experiences and full-stack development.</p>
+                        <p class="about-text">Currently focused on C# with ASP.NET and Blazor, constantly exploring new technologies to push digital boundaries. I transform complex problems into elegant, interactive solutions.</p>
+                        
+                        <!-- Stats Bar -->
+                        <div class="stats-container">
+                            <div class="stat-item" data-count="15">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Projects Completed</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" data-percent="90"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item" data-count="8">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Tech Stacks</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" data-percent="80"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item" data-count="3">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Years Coding</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" data-percent="70"></div>
+                                </div>
+                            </div>
+                            <div class="stat-item" data-count="4">
+                                <div class="stat-number">0</div>
+                                <div class="stat-label">Certifications</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" data-percent="85"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Technical Skills -->
+            <div class="skills-section reveal">
+                <h3 class="section-subtitle">Technical Skills</h3>
+                <div class="skills-grid">
+                    <div class="skill-category">
+                        <h4><i class="fas fa-code"></i> Programming Languages</h4>
+                        <div class="skill-items">
+                            <span class="skill-item" data-level="90">C#</span>
+                            <span class="skill-item" data-level="85">JavaScript</span>
+                            <span class="skill-item" data-level="75">Three.js</span>
+                            <span class="skill-item" data-level="95">HTML/CSS</span>
+                            <span class="skill-item" data-level="80">C</span>
+                            <span class="skill-item" data-level="70">Java</span>
+                            <span class="skill-item" data-level="85">PHP</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4><i class="fas fa-cubes"></i> Frameworks & Tools</h4>
+                        <div class="skill-items">
+                            <span class="skill-item" data-level="85">ASP.NET Core</span>
+                            <span class="skill-item" data-level="80">Blazor</span>
+                            <span class="skill-item" data-level="75">Node.js</span>
+                            <span class="skill-item" data-level="70">Springboot</span>
+                            <span class="skill-item" data-level="90">Git/GitHub</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4><i class="fas fa-robot"></i> AI & Data</h4>
+                        <div class="skill-items">
+                            <span class="skill-item" data-level="80">API Integration</span>
+                            <span class="skill-item" data-level="75">Prompt Engineering</span>
+                            <span class="skill-item" data-level="70">Basic AI Concepts</span>
+                        </div>
+                    </div>
+                    <div class="skill-category">
+                        <h4><i class="fas fa-tools"></i> Other Tools</h4>
+                        <div class="skill-items">
+                            <span class="skill-item" data-level="85">MS Office Suite</span>
+                            <span class="skill-item" data-level="80">Canva</span>
+                            <span class="skill-item" data-level="75">Video Editing</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Education -->
+            <div class="education-section reveal">
+                <h3 class="section-subtitle">Educational Background</h3>
+                <div class="edu-grid">
+                    <div class="edu-card">
+                        <div class="edu-year">2024 - Present</div>
+                        <h4>BS Computer Science</h4>
+                        <div class="edu-school">University of San Carlos – Talamban</div>
+                        <div class="edu-location"><i class="fas fa-map-marker-alt"></i> Cebu</div>
+                        <div class="edu-honors"><i class="fas fa-star"></i> 13th Dean's Lister</div>
+                    </div>
+                    <div class="edu-card">
+                        <div class="edu-year">2024</div>
+                        <h4>Senior High School (ICT – Programming)</h4>
+                        <div class="edu-school">University of Cebu – Banilad</div>
+                        <div class="edu-location"><i class="fas fa-map-marker-alt"></i> Cebu</div>
+                        <div class="edu-honors"><i class="fas fa-trophy"></i> Top 1 – With Highest Honors</div>
+                    </div>
+                    <div class="edu-card">
+                        <div class="edu-year">2022</div>
+                        <h4>Junior High School (Special Science Curriculum)</h4>
+                        <div class="edu-school">Consolacion National High School</div>
+                        <div class="edu-location"><i class="fas fa-map-marker-alt"></i> Cebu</div>
+                        <div class="edu-honors"><i class="fas fa-medal"></i> Top 3 – With High Honors</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="achievements-section reveal">
+                <h3 class="section-subtitle">Achievements & Certifications</h3>
+                <div class="achievements-grid">
+                    <div class="achievement-card">
+                        <i class="fas fa-certificate"></i>
+                        <span>C# HackerRank Certificate (2025)</span>
+                    </div>
+                    <div class="achievement-card">
+                        <i class="fas fa-trophy"></i>
+                        <span>Consistent Dean's Lister (2024 – Present)</span>
+                    </div>
+                    <div class="achievement-card">
+                        <i class="fas fa-medal"></i>
+                        <span>4th Placer – UP Interhigh Programming Competition (2024)</span>
+                    </div>
+                    <div class="achievement-card">
+                        <i class="fas fa-star"></i>
+                        <span>Top 3 in Overall Campus – University of Cebu (2024)</span>
+                    </div>
+                    <div class="achievement-card">
+                        <i class="fas fa-star"></i>
+                        <span>Top 1 in Overall Strand – University of Cebu (2024)</span>
+                    </div>
+                    <div class="achievement-card">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Maintained Scholarship (2022 – 2024)</span>
+                    </div>
+                    <div class="achievement-card">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Cisco Networking Course Certificate (2022)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Experience Section -->
+    <section id="experience" class="section experience">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">02</span>
+                <h2 class="section-title">Experience</h2>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2025 — Present</div>
+                    <div class="timeline-content">
+                        <h3>Software Engineering Intern</h3>
+                        <h4>e-Permits System · Cebu</h4>
+                        <ul>
+                            <li>Contributed to government e-Permits platform using ASP.NET Core, C#, and Entity Framework</li>
+                            <li>Implemented JWT authentication, login flows, and repository patterns</li>
+                            <li>Collaborated via Git workflows, pull requests, and code reviews</li>
+                            <li>Assisted in debugging, database integration, and API testing</li>
+                        </ul>
+                        <div class="timeline-tags">
+                            <span>ASP.NET Core</span>
+                            <span>C#</span>
+                            <span>Entity Framework</span>
+                            <span>JWT</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2025 — Present</div>
+                    <div class="timeline-content">
+                        <h3>Ambassador</h3>
+                        <h4>Innovare · Cebu</h4>
+                        <ul>
+                            <li>Promoted Full Scale to students, showcasing tech culture and opportunities</li>
+                            <li>Acted as bridge between sponsors and participants</li>
+                            <li>Organized events, coordinated logistics, and managed outreach campaigns</li>
+                        </ul>
+                        <div class="timeline-tags">
+                            <span>Event Management</span>
+                            <span>Communication</span>
+                            <span>Outreach</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2025</div>
+                    <div class="timeline-content">
+                        <h3>POS System Developer</h3>
+                        <h4>Cebu Plant Depot · Cebu</h4>
+                        <ul>
+                            <li>Built PHP-based Inventory & POS system with CRUD operations</li>
+                            <li>Implemented sales tracking and stock monitoring features</li>
+                            <li>Automated manual inventory processes, improving efficiency</li>
+                        </ul>
+                        <div class="timeline-tags">
+                            <span>PHP</span>
+                            <span>MySQL</span>
+                            <span>JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-date">2024</div>
+                    <div class="timeline-content">
+                        <h3>On-the-Job Trainee</h3>
+                        <h4>Qualfon Phils. Inc. (HR Department) · Cebu</h4>
+                        <ul>
+                            <li>Assisted in organizing and maintaining HR records</li>
+                            <li>Developed time management and data organization skills</li>
+                            <li>Maintained confidentiality in corporate environment</li>
+                        </ul>
+                        <div class="timeline-tags">
+                            <span>Data Management</span>
+                            <span>Organization</span>
+                            <span>Confidentiality</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+        <!-- Projects Section - 3D Carousel -->
+    <section id="projects" class="section projects">
+        <div class="container-fluid">
+            <div class="section-header container reveal">
+                <span class="section-tag">03</span>
+                <h2 class="section-title">Featured Projects</h2>
+            </div>
+            
+            <!-- Swiper Container -->
+            <div class="swiper project-swiper reveal">
+                <div class="swiper-wrapper" id="projectsWrapper">
+                    <!-- Slides injected via JS -->
+                </div>
+                <div class="swiper-pagination"></div>
+                <div class="swiper-button-prev"></div>
+                <div class="swiper-button-next"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tech Lab Section - 3D Game -->
+    <section id="tech" class="section tech-game-section">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">04</span>
+                <h2 class="section-title">Tech Lab</h2>
+            </div>
+            <div class="game-instructions reveal">
+                <p><i class="fas fa-keyboard"></i> Use <strong>W A S D</strong> or <strong>Arrows</strong> to move. Walk to a Monolith to inspect.</p>
+            </div>
+        </div>
+        
+        <!-- Game Canvas Container -->
+        <div id="tech-game-container" class="reveal">
+            <div id="tech-game-ui">
+                <div id="tech-info-panel">
+                    <h3 id="tech-name">System Ready</h3>
+                    <div class="progress-bar-container">
+                        <div id="tech-level-bar"></div>
+                    </div>
+                    <p id="tech-level-text">Move to explore...</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Section - Interactive Timeline -->
+    <section id="journey" class="section journey">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">05</span>
+                <h2 class="section-title">Dev Journey</h2>
+            </div>
+            
+            <div class="journey-container reveal">
+                <div class="timeline-controls">
+                    <button class="timeline-btn" id="timeline-prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="timeline-btn" id="timeline-next">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                
+                <div class="journey-path">
+                    <div class="path-line"></div>
+                    <div class="journey-nodes" id="journeyNodes">
+                        <!-- Nodes injected via JS -->
+                    </div>
+                </div>
+                
+                <div class="journey-details" id="journeyDetails">
+                    <h3 class="journey-year">Select a Node</h3>
+                    <p class="journey-description">Click on any timeline node to explore my development journey</p>
+                    <div class="journey-skills">
+                        <h4>Skills Acquired</h4>
+                        <div class="skills-list" id="journeySkills"></div>
+                    </div>
+                    <div class="journey-projects">
+                        <h4>Key Projects</h4>
+                        <div class="projects-list" id="journeyProjects"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="section contact">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">06</span>
+                <h2 class="section-title">Contact</h2>
+            </div>
+            
+            <div class="contact-grid">
+                <div class="contact-info reveal">
+                    <h3 class="contact-headline">Let's build something amazing</h3>
+                    <p class="contact-text">I'm always open to discussing new opportunities, creative projects, or just chatting about the latest in tech.</p>
+                    
+                    <a href="mailto:drixyl.nacu@gmail.com" class="contact-email">
+                        <i class="fas fa-envelope"></i> drixyl.nacu@gmail.com
+                    </a>
+                    
+                    <div class="contact-social">
+                        <a href="http://github.com/DrexReeeeee" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                            <span>GitHub</span>
+                        </a>
+                        <a href="https://www.linkedin.com/in/drixy-reece-irish-nacu-49627b108/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                            <span>LinkedIn</span>
+                        </a>
+                        <a href="https://www.facebook.com/drixyl.nacu" target="_blank" class="social-link">
+                            <i class="fab fa-facebook"></i>
+                            <span>Facebook</span>
+                        </a>
+                        <a href="https://discordapp.com/users/786581917990125569" target="_blank" class="social-link">
+                            <i class="fab fa-discord"></i>
+                            <span>Discord</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="interactive-pad reveal">
+                    <h4>Interactive Pad</h4>
+                    <div class="cyber-pad">
+                        <div class="pad-grid">
+                            <div class="pad-cell" data-sound="1"></div>
+                            <div class="pad-cell" data-sound="2"></div>
+                            <div class="pad-cell" data-sound="3"></div>
+                            <div class="pad-cell" data-sound="4"></div>
+                            <div class="pad-cell" data-sound="5"></div>
+                            <div class="pad-cell" data-sound="6"></div>
+                            <div class="pad-cell" data-sound="7"></div>
+                            <div class="pad-cell" data-sound="8"></div>
+                            <div class="pad-cell" data-sound="9"></div>
+                        </div>
+                        <div class="pad-controls">
+                            <button class="pad-btn" id="pad-play">
+                                <i class="fas fa-play"></i> Play
+                            </button>
+                            <button class="pad-btn" id="pad-clear">
+                                <i class="fas fa-eraser"></i> Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">REZ.DEV</div>
+                <p>Crafting digital experiences in the neon-lit corners of the web</p>
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#projects">Projects</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                <div class="copyright">
+                    © 2025 REZ.DEV — Designed & Developed by Drixy Reece
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cyber Terminal -->
     <div id="cyber-terminal">
         <div class="terminal-header">
             <div class="terminal-controls">
@@ -22,6 +515,7 @@
                 <span class="control maximize"></span>
             </div>
             <span class="terminal-title">SYSTEM TERMINAL</span>
+            <button class="terminal-close"><i class="fas fa-times"></i></button>
         </div>
         <div class="terminal-content">
             <div class="terminal-line">> Initializing Rez.dev portfolio system...</div>
@@ -34,384 +528,11 @@
             </div>
         </div>
     </div>
-    
 
-    <div id="mouse-trail"></div>
-    <canvas id="bg-canvas"></canvas>
+    <button id="terminal-toggle" class="terminal-toggle-btn">
+        <i class="fas fa-terminal"></i>
+    </button>
 
-    <!-- Navigation -->
-    <nav>
-        <div class="container nav-container">
-            <div class="logo">Rez.dev</div>
-            <div class="nav-links">
-                <a href="#home">Home</a>
-                <a href="#about">About</a>
-                <a href="#tech">Tech Stack</a>
-                <a href="#journey">Journey</a>
-                <a href="#projects">Projects</a>
-                <a href="#contact">Contact</a>
-                <button id="terminal-toggle" class="terminal-btn">
-                    <i class="fas fa-terminal"></i>
-                </button>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <div class="hologram-logo">
-                <span class="logo-text">Rez.dev</span>
-                <div class="hologram-grid"></div>
-            </div>
-            <p class="tagline">Building digital worlds, one line of code at a time.</p>
-            <div class="interactive-controls">
-                <button class="control-btn" id="color-toggle">
-                    <i class="fas fa-palette"></i>
-                    <span>Toggle Colors</span>
-                </button>
-                 <button class="control-btn" id="music-toggle" onclick="window.open('https://codepen.io/search/pens?q=cyberpunk+glow', '_blank')">
-                    <i class="fas fa-lightbulb"></i>
-                    <span>Inspiration</span>
-                </button>
-                <button class="control-btn" id="particle-toggle">
-                    <i class="fas fa-sparkles"></i>
-                    <span>Particles</span>
-                </button>
-            </div>
-            <div class="code-rain"></div>
-        </div>
-        <div class="scroll-indicator">
-            <span>Scroll to explore</span>
-            <div class="arrow"></div>
-        </div>
-    </section>
-
-    <!-- About Section -->
-    <section id="about">
-        <div class="container">
-            <div class="section-title">
-                <h2>About Me</h2>
-            </div>
-            <div class="about-content">
-                <div class="holographic-panel">
-                    <div class="panel-header">
-                        <div class="data-line"></div>
-                        <h3>Developer Profile</h3>
-                        <button class="panel-toggle">
-                            <i class="fas fa-chevron-down"></i>
-                        </button>
-                    </div>
-                    <div class="panel-content">
-                        <div class="avatar-container">
-                            <div class="avatar">
-                                <i class="fas fa-code"></i>
-                            </div>
-                            <div class="glow-effect"></div>
-                            <div class="interactive-dots">
-                                <div class="dot" data-info="Frontend Specialist"></div>
-                                <div class="dot" data-info="C# Enthusiast"></div>
-                                <div class="dot" data-info="UI/UX Designer"></div>
-                                <div class="dot" data-info="Problem Solver"></div>
-                            </div>
-                        </div>
-                        <div class="bio">
-                            <p>A second-year Computer Science student specializing in immersive web experiences and full-stack/backend development.</p>
-                            <p>My current focus is on C# with ASP.NET and Blazor, but I'm constantly exploring new technologies to push the boundaries of digital interaction.</p>
-                            <div class="skill-bars">
-                                <div class="skill-bar">
-                                    <div class="skill-label">
-                                        <span>C# & .NET</span>
-                                        <span class="skill-percent">80%</span>
-                                    </div>
-                                    <div class="skill-progress">
-                                        <div class="skill-fill" data-skill="80"></div>
-                                    </div>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-label">
-                                        <span>Backend Development</span>
-                                        <span class="skill-percent">70%</span>
-                                    </div>
-                                    <div class="skill-progress">
-                                        <div class="skill-fill" data-skill="70"></div>
-                                    </div>
-                                </div>
-                                <div class="skill-bar">
-                                    <div class="skill-label">
-                                        <span>UI/UX Design</span>
-                                        <span class="skill-percent">50%</span>
-                                    </div>
-                                    <div class="skill-progress">
-                                        <div class="skill-fill" data-skill="50"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="panel-footer">
-                        <div class="status-indicator">
-                            <span class="pulse"></span>
-                            <span>Currently Online</span>
-                        </div>
-                        <div class="social-stats">
-                            <div class="stat">
-                                <span class="stat-number">10+</span>
-                                <span class="stat-label">Projects</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">5</span>
-                                <span class="stat-label">Tech Stacks</span>
-                            </div>
-                            <div class="stat">
-                                <span class="stat-number">2</span>
-                                <span class="stat-label">Years Coding</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tech Stack Section -->
-    <section id="tech">
-        <div class="container">
-            <div class="section-title">
-                <h2>Tech Stack</h2>
-                <p class="section-subtitle">Click and drag to explore technologies</p>
-            </div>
-            <div class="tech-orbit">
-                <div class="orbit-center">
-                    <div class="center-glow"></div>
-                </div>
-                <div class="tech-icons">
-                    <!-- Tech icons will be positioned by JavaScript -->
-                </div>
-                <div class="tech-info-panel">
-                    <h3 class="tech-name">Select a Technology</h3>
-                    <p class="tech-description">Click on any technology icon to learn more about my experience with it.</p>
-                    <div class="tech-details">
-                        <div class="tech-skill-level">
-                            <span class="skill-label">Skill Level:</span>
-                            <div class="skill-dots">
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                                <div class="dot"></div>
-                            </div>
-                        </div>
-                        <div class="tech-projects">
-                            <span class="projects-label">Projects:</span>
-                            <span class="projects-count">0</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Journey Section -->
-    <section id="journey">
-        <div class="container">
-            <div class="section-title">
-                <h2>Dev Journey</h2>
-                <p class="section-subtitle">Drag timeline or click nodes to explore</p>
-            </div>
-            <div class="journey-container">
-                <div class="timeline-controls">
-                    <button class="timeline-btn" id="timeline-prev">
-                        <i class="fas fa-chevron-left"></i>
-                    </button>
-                    <button class="timeline-btn" id="timeline-next">
-                        <i class="fas fa-chevron-right"></i>
-                    </button>
-                </div>
-                <div class="journey-path">
-                    <div class="path-line"></div>
-                    <div class="journey-nodes">
-                        <!-- Journey nodes will be populated by JS below  -->
-                    </div>
-                </div>
-                <div class="journey-details">
-                    <h3 class="journey-year">Select a Timeline Node</h3>
-                    <p class="journey-description">Click on any node to see details about that period of my development journey.</p>
-                    <div class="journey-skills">
-                        <h4>Skills Acquired</h4>
-                        <div class="skills-list">
-                            <!-- Skills will be populated by JS below -->
-                        </div>
-                    </div>
-                    <div class="journey-projects">
-                        <h4>Key Projects</h4>
-                        <div class="projects-list">
-                            <!-- Projects will be populated by JavaScript -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects">
-        <div class="container">
-            <div class="section-title">
-                <h2>Projects</h2>
-                <p class="section-subtitle">Hover and click to explore projects</p>
-            </div>
-            <div class="projects-controls">
-                <button class="filter-btn active" data-filter="all">All Projects</button>
-                <button class="filter-btn" data-filter="web">Web Development</button>
-                <button class="filter-btn" data-filter="csharp">C# Projects</button>
-                <button class="filter-btn" data-filter="ai">AI</button>
-            </div>
-            <div class="projects-gallery">
-                <!-- Project cards will be populated by JS -->
-            </div>
-            <div class="project-modal" id="project-modal">
-                <div class="modal-content">
-                    <button class="modal-close">
-                        <i class="fas fa-times"></i>
-                    </button>
-                    <div class="modal-header">
-                        <h3 class="modal-title">Project Title</h3>
-                        <div class="modal-tech">
-                            <!-- Tech tags will be populated by JS -->
-                        </div>
-                    </div>
-                    <div class="modal-body">
-                        <div class="modal-image">
-                            <!-- Project image will be populated by JS -->
-                        </div>
-                        <div class="modal-details">
-                            <div class="modal-description">
-                                <h4>Description</h4>
-                                <p>Project description will appear here.</p>
-                            </div>
-                            <div class="modal-features">
-                                <h4>Features</h4>
-                                <ul class="features-list">
-                                    <!-- Features will be populated by JS -->
-                                </ul>
-                            </div>
-                            <div class="modal-links">
-                                <a href="#" class="modal-link live-demo">
-                                    <i class="fas fa-external-link-alt"></i>
-                                    Live Demo
-                                </a>
-                                <a href="#" class="modal-link source-code">
-                                    <i class="fab fa-github"></i>
-                                    Source Code
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact">
-        <div class="container">
-            <div class="section-title">
-                <h2>Contact</h2>
-                <p class="section-subtitle">Get in touch or play with the interactive elements</p>
-            </div>
-            <div class="contact-container">
-               <div class="contact-form">
-            <div class="floating-mail">
-                <i class="fas fa-envelope"></i>
-            </div>
-            <form id="contactForm">
-                <div class="form-group">
-                    <input type="text" id="name" class="form-control" required>
-                    <label for="name">Name</label>
-                    <div class="form-line"></div>
-                </div>
-                <div class="form-group">
-                    <input type="email" id="email" class="form-control" required>
-                    <label for="email">Email</label>
-                    <div class="form-line"></div>
-                </div>
-                <div class="form-group">
-                    <input type="text" id="subject" class="form-control" required>
-                    <label for="subject">Subject</label>
-                    <div class="form-line"></div>
-                </div>
-                <div class="form-group">
-                    <textarea id="message" class="form-control" required></textarea>
-                    <label for="message">Message</label>
-                    <div class="form-line"></div>
-                </div>
-                <button type="submit" class="submit-btn">
-                    <span>Send Message</span>
-                    <div class="btn-glow"></div>
-                </button>
-            </form>
-        </div>
-                <div class="contact-info">
-                    <h3>Let's Build The Future Together</h3>
-                    <p>I'm always open to discussing new opportunities, creative projects, or just chatting about the latest in tech and design.</p>
-                    <div class="interactive-elements">
-                        <div class="cyber-pad">
-                            <div class="pad-grid">
-                                <div class="pad-cell" data-sound="1"></div>
-                                <div class="pad-cell" data-sound="2"></div>
-                                <div class="pad-cell" data-sound="3"></div>
-                                <div class="pad-cell" data-sound="4"></div>
-                                <div class="pad-cell" data-sound="5"></div>
-                                <div class="pad-cell" data-sound="6"></div>
-                                <div class="pad-cell" data-sound="7"></div>
-                                <div class="pad-cell" data-sound="8"></div>
-                                <div class="pad-cell" data-sound="9"></div>
-                            </div>
-                            <div class="pad-controls">
-                                <button class="pad-btn" id="pad-play">
-                                    <i class="fas fa-play"></i>
-                                </button>
-                                <button class="pad-btn" id="pad-clear">
-                                    <i class="fas fa-eraser"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="social-links">
-                        <a href="http://github.com/DrexReeeeee" target="_blank"><i class="fab fa-github"></i> </a>
-                        <a href="https://www.linkedin.com/in/drixy-reece-irish-nacu-49627b108/" target="_blank"><i class="fab fa-linkedin"></i></a>
-                        <a href="https://www.facebook.com/drixyl.nacu" target="_blank"><i class="fab fa-facebook"></i></a>
-                        <a href="https://discordapp.com/users/786581917990125569" target="_blank"><i class="fab fa-discord"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="logo">Rez.dev</div>
-                <p>Crafting digital experiences in the neon-lit corners of the web</p>
-                <div class="footer-controls">
-                    <button class="footer-btn" id="theme-toggle">
-                        <i class="fas fa-moon"></i>
-                        Toggle Theme
-                    </button>
-                    <button class="footer-btn" id="reset-all">
-                        <i class="fas fa-redo"></i>
-                        Reset All
-                    </button>
-                </div>
-                <div class="copyright">
-                    &copy; 2025 Rez.dev. To be continued.
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    
     <script src="script.js"></script>
 </body>
 </html>
